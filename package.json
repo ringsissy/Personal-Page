@@ -2,9 +2,6 @@
   "name": "sissyrin-blog",
   "private": true,
   "scripts": {
-    "deploy": "wrangler pages deploy . --project-name=sissyrin"
-  },
-  "devDependencies": {
-    "wrangler": "^4.0.0"
+    "build": "echo \"Static site — no build step required\""
   }
 }
