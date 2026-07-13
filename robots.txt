@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sissyrin.cc/sitemap.xml
