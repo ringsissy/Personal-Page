@@ -35,7 +35,7 @@ const observer = new IntersectionObserver(
 );
 
 document.querySelectorAll(
-  '.about-card, .interest-card, .journal-card, .gallery-item, .connect-card'
+  '.about-card, .interest-card, .manual-card, .manual-cover, .journal-card, .gallery-item, .connect-card'
 ).forEach((el, i) => {
   el.style.opacity = '0';
   el.style.transform = 'translateY(24px)';
