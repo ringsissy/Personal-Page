@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+# Google
+User-agent: Googlebot
+Allow: /
+
 Sitemap: https://sissyrin.cc/sitemap.xml
