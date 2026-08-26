@@ -62,6 +62,7 @@ function formatCount(n) {
 
 function tweetCardHTML(tweet) {
   const url = `https://x.com/RingSissy89044/status/${tweet.id}`;
+  const isReply = tweet.type === 'reply';
   const media = Array.isArray(tweet.media) ? tweet.media : [];
   const mediaClass = media.length > 1 ? 'tweet-media tweet-media-2' : 'tweet-media';
   const mediaHTML = media.length
@@ -70,24 +71,37 @@ function tweetCardHTML(tweet) {
         return `<a href="${url}" target="_blank" rel="noopener"><img src="${href}" alt="推文配图 ${tweet.date}" loading="lazy"></a>`;
       }).join('')}</div>`
     : '';
-  const videoBadge = tweet.hasVideo
-    ? '<span class="tweet-badge">含视频 · 去 X 观看</span>'
-    : '';
+  const badges = [];
+  if (isReply && tweet.conversationId) {
+    badges.push(`<a class="tweet-badge" href="https://x.com/i/web/status/${tweet.conversationId}" target="_blank" rel="noopener">回复</a>`);
+  }
+  if (tweet.hasVideo) {
+    badges.push('<span class="tweet-badge">含视频 · 去 X 观看</span>');
+  }
   const [y, m, d] = tweet.date.split('-');
+  let timeLabel = `${y}.${m}.${d}`;
+  if (tweet.createdAt) {
+    const dt = new Date(tweet.createdAt);
+    if (!Number.isNaN(dt.getTime())) {
+      const hh = String(dt.getHours()).padStart(2, '0');
+      const mm = String(dt.getMinutes()).padStart(2, '0');
+      timeLabel = `${y}.${m}.${d} ${hh}:${mm}`;
+    }
+  }
 
   return `
-    <article class="tweet-card">
+    <article class="tweet-card${isReply ? ' tweet-card-reply' : ''}">
       <header class="tweet-meta">
         <img src="/public/avatar.jpg" alt="" class="tweet-avatar" width="40" height="40">
         <div class="tweet-meta-name">
           <strong>リン Rin</strong>
           <span>@RingSissy89044</span>
         </div>
-        <time datetime="${tweet.date}">${y}.${m}.${d}</time>
+        <time datetime="${tweet.createdAt || tweet.date}">${timeLabel}</time>
       </header>
       <p class="tweet-text">${escapeHtml(tweet.text)}</p>
       ${mediaHTML}
-      ${videoBadge}
+      ${badges.join('')}
       <footer class="tweet-footer">
         <span>♥ ${formatCount(tweet.likes)}</span>
         <span>↻ ${formatCount(tweet.reposts)}</span>
@@ -109,8 +123,10 @@ async function renderTweets() {
     const all = Array.isArray(data.tweets) ? data.tweets : [];
 
     mounts.forEach(el => {
+      const originalsOnly = el.getAttribute('data-tweets-originals') === 'true';
       const limit = Number(el.getAttribute('data-tweets-limit') || 0);
-      const tweets = limit > 0 ? all.slice(0, limit) : all;
+      let tweets = originalsOnly ? all.filter(t => t.type !== 'reply') : all;
+      tweets = limit > 0 ? tweets.slice(0, limit) : tweets;
       if (!tweets.length) {
         el.innerHTML = '<p class="section-desc">暂时没有可展示的原创推文。</p>';
         return;

@@ -1051,6 +1051,11 @@ body {
   border-color: rgba(255, 110, 180, 0.4);
 }
 
+.tweet-card-reply {
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
 .tweet-meta {
   display: flex;
   align-items: center;
@@ -1129,6 +1134,7 @@ body {
   border-radius: 12px;
   padding: 4px 10px;
   width: fit-content;
+  text-decoration: none;
 }
 
 .tweet-footer {
